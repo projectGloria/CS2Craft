@@ -1,0 +1,60 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "CS2 Craft",
+  "version": "0.4.0",
+  "identifier": "com.cs2craft.catalog",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "CS2 Craft",
+        "width": 1440,
+        "height": 940,
+        "minWidth": 960,
+        "minHeight": 650,
+        "backgroundColor": "#101214"
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' asset: http://asset.localhost data: blob:; connect-src ipc: http://ipc.localhost asset: http://asset.localhost blob:; font-src 'self'; object-src 'none'; base-uri 'self'",
+      "assetProtocol": {
+        "enable": true,
+        "scope": [
+          "$APPCACHE/images/**",
+          "$APPCACHE/models/**"
+        ]
+      }
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "nsis"
+    ],
+    "resources": [
+      "resources/catalog.json",
+      "resources/color-corrections.json",
+      "resources/licenses/*",
+      "resources/viewer/*"
+    ],
+    "icon": [
+      "icons/icon.ico"
+    ],
+    "shortDescription": "Discover your next CS2 skin",
+    "category": "Entertainment",
+    "windows": {
+      "nsis": {
+        "displayLanguageSelector": false,
+        "installMode": "currentUser"
+      },
+      "webviewInstallMode": {
+        "type": "downloadBootstrapper"
+      }
+    }
+  }
+}

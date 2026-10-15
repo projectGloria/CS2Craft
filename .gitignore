@@ -1,0 +1,14 @@
+node_modules/
+dist/
+src-tauri/target/
+tools/catalog-builder/target/
+.catalog-cache/
+*.log
+*.tmp
+.qa/
+tools/source2/
+src-tauri/resources/viewer/
+*.tsbuildinfo
+.backups/
+.DS_Store
+Thumbs.db
