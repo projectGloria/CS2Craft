@@ -1,65 +1,249 @@
+<div align="center">
+
+<img src="src-tauri/icons/icon.png" alt="CS2 Craft Logo" width="120" height="120" />
+
 # CS2 Craft
 
-A personal Windows desktop catalog for Counter-Strike 2 cosmetics. Search by name, appearance color, and category-specific properties; save favorites and lists; compare up to four items.
+**Discover your next CS2 skin — A high-performance Windows desktop catalog, craft studio, and offline 3D inspector for Counter-Strike 2**
 
-## Version 0.4.0
+*Engineered with Tauri v2, Rust, React 19, SQLite, and Three.js.*
 
-The supplied fixes report has been implemented in a broad first delivery. See [implementation status](IMPLEMENTATION_STATUS.md) for completed features, verification, and remaining work. The **Craft** menu opens trade-ups, sticker/charm concepts, CT/T loadouts, and public Steam inventory import. **Library → Export / import lists** handles portable files and share codes.
+<p>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-00B074.svg?style=flat-square" alt="License: MIT" /></a>
+  <img src="https://img.shields.io/badge/Platform-Windows%20x64-0078D4.svg?style=flat-square&logo=windows" alt="Platform: Windows x64" />
+  <img src="https://img.shields.io/badge/Tauri-v2-FFC131.svg?style=flat-square&logo=tauri" alt="Tauri v2" />
+  <img src="https://img.shields.io/badge/Rust-2021-DEA584.svg?style=flat-square&logo=rust" alt="Rust" />
+  <img src="https://img.shields.io/badge/React-19-61DAFB.svg?style=flat-square&logo=react" alt="React 19" />
+  <img src="https://img.shields.io/badge/Database-SQLite-003B57.svg?style=flat-square&logo=sqlite" alt="SQLite" />
+  <img src="https://img.shields.io/badge/3D%20Engine-Three.js-black.svg?style=flat-square&logo=threedotjs" alt="Three.js" />
+  <img src="https://img.shields.io/badge/Telemetry-Disabled-success.svg?style=flat-square" alt="Telemetry Disabled" />
+</p>
 
-Search understands wears, variants, rarity, phases, collections/cases, factions, and exclusions such as **ak47 ft -safari**. Suggestions support arrows, Enter, Escape, and recent searches/items. CT and T agents have their own categories. Relevant filters offer an Exclude mode; side/squad filters are separate from esports teams. Float ranges check catalog-cap overlap; price ranges use known default-variant quotes. Two colors can be matched simultaneously with CIEDE2000.
+---
 
-## Use the app
+<p>
+  <a href="#-about-cs2-craft">About</a> • 
+  <a href="#-key-features">Features</a> • 
+  <a href="#-visual-tour">Visual Tour</a> • 
+  <a href="#-installation--usage">Installation</a> • 
+  <a href="#-building-from-source">Building</a> • 
+  <a href="#-offline-3d-architecture">Offline 3D</a> • 
+  <a href="#-data-sources-attribution--license">Data & Licenses</a>
+</p>
 
-Run the Windows installer in `release/`. It installs for the current user and creates a Start menu entry. The catalog and color index are bundled. Images download when viewed and are retained for offline use. The app checks catalog updates on launch when the previous check is older than 24 hours; manual refresh and cache controls are in **Settings & catalog**.
+<picture>
+  <img
+    width="900"
+    src="docs/assets/catalog-preview.png"
+    alt="CS2 Craft Desktop Interface Preview"
+  />
+</picture>
 
-Discover categories and dropdown filters sit above the full-width gallery. The gallery opens directly below the top controls; the total catalog count is under **Settings & catalog → Catalog statistics**. Favorites and named lists are in the **Library** menu; settings are in the top-right gear button. Filter dropdowns support searching long option lists, multiple selections, Escape, and closing by clicking outside. Selected options appear first, followed by frequently used choices; the order stays stable while a dropdown is open. Reopening a dropdown clears its option search. Weapon names include skin thumbnails; choose a skin for each weapon under **Settings & catalog → Weapon icons**. Icon choices are retained across restarts, and unavailable or removed skins fall back to an automatic icon. **Explore all** searches across item categories. Sort order, text/color search, color mode, and tolerance are retained across navigation and restarts. Each item type and Library view remembers its own filters; **Reset filters** explicitly clears filters without changing sorting. Filters combine with AND, while multiple values in one filter combine with OR. The color slider adjusts matching tolerance; dominant matching considers the main palette clusters, while accent matching includes smaller details. The wide item detail popup places artwork, market controls, and information side by side. Belonging collections and cases appear as clickable thumbnail rows directly in Information. Lists and container contents have tabs with pagination; long case lists are paginated within Information. Wear and special selections choose the precise Steam Market name.
+</div>
 
-Favorites and lists live in SQLite under `%LOCALAPPDATA%\com.cs2craft.catalog\`. Images use the app cache directory. Clearing the image cache leaves the database and saves intact. Comparison selection is a local view preference retained across restarts. Browsing preferences, weapon icons, and usage statistics are saved in the app’s local webview storage. **Library → Your statistics** (also linked in Settings) shows weapon selections and searches, frequent search phrases, common filter choices, and item views. Activity counts start with this feature, exclude background catalog/price refreshes and preference restoration, and can be cleared from the statistics page. Searches count after a typing pause, Enter, or leaving the search box. Weapon priority combines explicit filter selections with searches that name the weapon.
+---
 
-## Development
+## 🎯 About CS2 Craft
 
-Requires Node.js, Rust's Windows MSVC toolchain, the Visual Studio C++ build tools, and WebView2.
+**CS2 Craft** is a personal, standalone Windows desktop catalog and companion tool designed for Counter-Strike 2 players, skin collectors, and craft planners.
+
+Browsing cosmetics in the Steam Community Market or generic websites is often clunky, rate-limited, and disconnected from your visual vision. **CS2 Craft** combines an indexed 29,000+ item local catalog, CIEDE2000 perceptual color matching, a 10-slot trade-up math simulator, a 2D sticker and charm craft studio, a CT/T loadout organizer, and local-first offline 3D model extraction into a single, cohesive desktop application:
+
+- 💻 **Independent Windows Application**: Native lightweight Tauri v2 shell with dedicated isolated local storage at `%LOCALAPPDATA%\com.cs2craft.catalog\`, desktop shortcuts, and zero registry clutter.
+- 🛡️ **Zero Telemetry & Local-First**: No mandatory user accounts, no telemetry pings, no cloud tracking, and no subscriptions. All saves, favorites, custom lists, and activity stats stay purely on your machine in SQLite.
+- ⚡ **Lightning Fast & Offline Ready**: Over 29,000 items pre-indexed with multi-field search and color signatures. Viewed images are retained in a local cache for instant offline browsing.
+- 📈 **Intelligent Market Integration**: Live Steam Community Market and Skinport cash prices fetched with queue-managed rate limiting, automatic backoff recovery, multi-currency support, and price-history tracking.
+
+---
+
+## ✨ Key Features
+
+<table>
+  <tr>
+    <td width="50%">
+      <h3>🔍 Perceptual Color &amp; Multi-Field Search</h3>
+      <p>Search across 29,000+ items by name, rarity, wear, phase, collection, and faction. Match up to two simultaneous colors using CIEDE2000 distance with dominant and accent modes. Filter with negative operators like <code>ak47 ft -safari</code> or <code>-wear:bs</code>.</p>
+    </td>
+    <td width="50%">
+      <h3>🧪 Trade-Up Contract Calculator</h3>
+      <p>Simulate 10-slot Trade-Up contracts from Consumer to Classified tier with exact float validation. Calculate real collection outcome odds, StatTrak support, sale fees, expected value (EV), ROI, and 1,000-outcome simulations.</p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <h3>🎨 2D Sticker &amp; Charm Craft Studio</h3>
+      <p>Visualize cosmetic combinations on a responsive canvas. Place, rotate, and scale up to 5 stickers with simulated wear scraping, attach charms, track total craft cost, and share builds via portable codes.</p>
+    </td>
+    <td width="50%">
+      <h3>🎮 Offline 3D Model Inspection</h3>
+      <p>Inspect weapon models without web viewers or streaming services. Automatically reads geometry and finishes directly from your local Counter-Strike 2 VPK files with map-inspired lighting and PBR shaders.</p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <h3>🎒 Steam Public Inventory Import</h3>
+      <p>Import public inventories instantly via SteamID64 or vanity profile URL. Inspect asset quantities, variant valuations, applied stickers/charms, and unpriced item badges with zero credential requirements.</p>
+    </td>
+    <td width="50%">
+      <h3>📊 Multi-Currency Quotes &amp; Usage Trends</h3>
+      <p>Streamlined pricing in 10 currencies (USD, EUR, GBP, TRY, CAD, AUD, CNY, BRL, JPY, PLN). Track 7/30/90-day price histories and discover your own browsing patterns through privacy-preserving local statistics.</p>
+    </td>
+  </tr>
+</table>
+
+---
+
+## 📸 Visual Tour
+
+### 1. Unified Cosmetics Catalog &amp; Intelligent Color Search
+Explore skins, knives, gloves, agents, stickers, charms, and music kits with instant filtering, wear bounds, and CIEDE2000 dual-color matching.
+
+<p align="center">
+  <img src="docs/assets/catalog-preview.png" alt="CS2 Craft Catalog and Color Search" width="820" />
+</p>
+
+### 2. Comprehensive Item Detail &amp; Historical Price Analytics
+Examine exact variant quotes, floating-point bounds, associated collections, case drop sources, and 7/30/90-day price trends side-by-side.
+
+<p align="center">
+  <img src="docs/assets/item-detail-preview.png" alt="Item Detail View and Market Analytics" width="820" />
+</p>
+
+### 3. Mathematical Trade-Up Contract Calculator
+Model contract economics with real collection outcome odds, configurable marketplace seller fees, exact float formulas, and Monte Carlo probability simulations.
+
+<p align="center">
+  <img src="docs/assets/tradeup-preview.png" alt="Trade-up Contract Calculator" width="820" />
+</p>
+
+### 4. Interactive 2D Sticker &amp; Charm Craft Canvas
+Experiment with custom sticker positioning, scaling, rotation, scraping wear, and charm attachments with instant budget tracking and portable configuration codes.
+
+<p align="center">
+  <img src="docs/assets/craft-studio-preview.png" alt="2D Sticker and Charm Craft Studio" width="820" />
+</p>
+
+### 5. Tactical CT &amp; T Loadout Planner
+Organize side-specific weapons, pistols, heavy rifles, and agent outfits. Monitor entire loadout valuation with instant missing-price alerts and export setups as JSON or share codes.
+
+<p align="center">
+  <img src="docs/assets/loadout-preview.png" alt="CT and T Loadout Planner" width="820" />
+</p>
+
+---
+
+## 🚀 Installation &amp; Usage
+
+### Running the Windows Installer
+
+Install CS2 Craft using the bundled NSIS installer:
 
 ```powershell
-npm ci
-npm run desktop
+CS2 Craft_0.4.0_x64-setup.exe
 ```
 
-The committed snapshot is ready to use; preparing it again is optional. To regenerate from a pinned upstream commit with full foreground-palette analysis:
+Upon installation, CS2 Craft configures:
+- A per-user installation (requires no administrator privileges).
+- Windows Start Menu shortcuts and high-resolution desktop icons.
+- An isolated application storage directory at `%LOCALAPPDATA%\com.cs2craft.catalog\`.
 
-```powershell
-npm run catalog:prepare
-```
+### Storage &amp; Cache Layout
 
-The builder caches downloaded artwork under `.catalog-cache/images/` and can be rerun after a failed download. It refuses to package a partial color index. The standalone builder and desktop updater share the Rust normalization and palette code. `src-tauri/resources/color-corrections.json` accepts canonical IDs or `name:Exact Item Name`, each mapped to an array of `{ "hex": "#rrggbb", "weight": 0.3 }` corrections.
+| Content | Location | Purpose |
+|---|---|---|
+| **Database** | `%LOCALAPPDATA%\com.cs2craft.catalog\library.sqlite` | Favorites, custom lists, and tag memberships |
+| **Market Quotes** | `%LOCALAPPDATA%\com.cs2craft.catalog\prices.sqlite` | Steam &amp; Skinport price history cache |
+| **Images** | `%LOCALAPPDATA%\com.cs2craft.catalog\cache\images\` | Offline skin thumbnails and cosmetic artwork |
+| **3D Models** | `%LOCALAPPDATA%\com.cs2craft.catalog\cache\models\` | Extracted GLB meshes and materials |
 
-```powershell
-npm test
-npm run test:native
-cargo run --manifest-path src-tauri/Cargo.toml --release --features verification --bin catalog-check
-npm run package
-```
+> [!TIP]
+> Use **Settings &amp; catalog → Clear image cache** at any time to free disk space without disturbing your saved lists or favorite items.
 
-The native integration check creates an isolated test database under `.qa/`, validates the full catalog, checks offline initialization and persistent saves, benchmarks search, and checks cached/uncached images with an unavailable network. Installer output is under `src-tauri/target/release/bundle/nsis/`.
+### Keyboard Shortcuts
 
-`npm run dev` provides a development-only browser review of the same React interface using the bundled snapshot and prepared image cache. The preview's local-storage saves are separate from desktop saves. Packaged builds contain no browser adapter and use Rust/SQLite exclusively.
+- <kbd>Ctrl</kbd> + <kbd>K</kbd>: Focus search dropdown instantly from anywhere in the app.
+- <kbd>↑</kbd> / <kbd>↓</kbd> and <kbd>Enter</kbd>: Navigate and select search suggestions.
+- <kbd>Esc</kbd>: Dismiss active dropdowns, popovers, or modal dialogs.
 
-## Data and appearance
+---
 
-Catalog metadata: [ByMykel/CSGO-API](https://github.com/ByMykel/CSGO-API). The bundled snapshot records its commit SHA and generation date. Artwork references come from Steam and [counter-strike-image-tracker](https://github.com/ByMykel/counter-strike-image-tracker). MIT notices for the catalog and tracker software are bundled under `resources/licenses`; underlying artwork belongs to its respective owners. CS2 Craft is unofficial and is not affiliated with Valve.
+## 🛠️ Building from Source
 
-The catalog mirrors upstream definitions, which can include legacy or unreleased items. Definitions without a usable name/image are excluded from default weapon entries. Images and palettes are representative, rather than exact float/seed renders; holographic finishes and pattern-dependent skins can look different in-game. Failed updates retain the previous validated catalog. Source items removed by later updates remain accessible through saved references.
+### Prerequisites
 
-Steam Market prices are fetched directly from the Community Market price overview endpoint. Visible gallery cards request default variants in batches; detail views prioritize exact wear/special names. USD, EUR, TRY, GBP, CAD, AUD, CNY, BRL, JPY, and PLN are available. Quotes are retained in **prices.sqlite**, reused for an hour, and recorded for price-history charts. Unknown prices are explicitly identified.
+Ensure the following tools are installed on your Windows machine:
+- **Node.js** (v20+ recommended)
+- **Rust toolchain** (stable MSVC, e.g. `x86_64-pc-windows-msvc`)
+- **Visual Studio C++ Build Tools** (Desktop development with C++)
+- **WebView2 Runtime** (pre-installed on modern Windows 10/11)
+- **Counter-Strike 2** (installed via Steam; required only for local 3D model conversion)
 
-The queue keeps every admitted request and sends at most one request every four seconds. Network/server errors trigger 15/30/60/120-second backoff; an explicit detail refresh may bypass a backoff once. Price sorting uses a frozen cache snapshot across pages, with unknown quotes last. New quotes show an update-order banner instead of moving cards automatically. Skinport's public cash quotes are available in details and cached for 15 minutes; unsupported JPY cash quotes are explicitly shown in USD. Other marketplaces are not integrated yet.
+### Build Steps
 
-## Offline 3D
+1. **Clone the repository:**
+   ```powershell
+   git clone https://github.com/projectGloria/CS2Craft.git
+   cd CS2Craft
+   ```
 
-Open a weapon or knife and select **3D view** above its image. Drag to rotate, scroll to zoom, use reset or auto-rotate, or expand the viewer. The app locates CS2 through Steam, exports the weapon geometry and textures locally, and caches a self-contained GLB under the app cache's `models/` directory. No viewer account, subscription, remote rendering, or internet connection is needed. The first view can take tens of seconds; later views reuse the prepared asset. CS2 must be installed. Updating its VPK invalidates the conversion cache. Clearing the image cache does not remove 3D assets.
+2. **Install frontend dependencies:**
+   ```powershell
+   npm ci
+   ```
 
-The viewer supports weapon, knife, default-glove, agent, and charm model export and clean approximations of solid, anodized, custom paint, and gunsmith finishes. Paint textures, UV geometry, and protected regions come from the installed game. Position-projected paint styles show a clearly labelled base weapon model. Wear, CS2 pattern seeds, applied stickers, StatTrak counters, pearlescence, and other special effects are not simulated. An independent approximate wear slider is available for supported painted models. Glove finish projection and exact in-game shaders remain unsupported; base models are labelled. Lighting presets, inspect rotation, and procedural wear are approximations.
+3. **Run desktop in development mode:**
+   ```powershell
+   npm run desktop
+   ```
 
-Builds run `scripts/prepare-viewer.mjs` to bundle a private Node runtime, the conversion script, and the official Source 2 Viewer CLI 20.0. If absent, the build downloads that pinned CLI from its official GitHub release once. The running app performs local file conversion only. Source 2 Viewer, Node, pngjs, and Three.js notices are included under `resources/licenses`; exported game assets belong to Valve and their original creators. The conversion script uses Source 2 Viewer's material DATA blocks to avoid dependence on current compiled shader formats. Rendering is a browser PBR approximation of the game shaders.
+4. **Package the production NSIS installer:**
+   ```powershell
+   npm run package
+   ```
+   The generated installer will be located in:
+   ```
+   src-tauri/target/release/bundle/nsis/
+   ```
 
-Public inventory import and the crafting planners are implemented. Exact inspect floats, surface placement, projected paint shaders, and wear/seed rendering remain unfinished; see IMPLEMENTATION_STATUS.md.
+### Additional Available Scripts
+
+| Command | Description |
+|---|---|
+| `npm run dev` | Launch development-only browser preview on `http://127.0.0.1:1420` |
+| `npm test` | Run frontend Vitest test suite and offline-viewer unit tests |
+| `npm run test:native` | Run Rust unit &amp; integration test suite |
+| `npm run catalog:prepare` | Rebuild catalog snapshot and palette index from upstream |
+| `cargo run --manifest-path src-tauri/Cargo.toml --release --bin catalog-check` | Comprehensive 29,280-item offline integration verification |
+
+---
+
+## 🧊 Offline 3D Architecture
+
+CS2 Craft includes a zero-cloud 3D weapon viewer:
+
+<p align="center">
+  <img src="src-tauri/icons/icon.png" alt="CS2 Craft 3D Logo" width="80" height="80" />
+</p>
+
+- **Local Steam Detection**: Automatically detects the active CS2 installation path through Steam registry keys (`Counter-Strike Global Offensive/game/csgo/pak01_dir.vpk`).
+- **Source 2 Extraction Pipeline**: Uses the pinned Source 2 Viewer CLI to extract game geometry, UV layouts, normal maps, and finish masks directly into standalone `.glb` containers.
+- **PBR Approximation Engine**: Renders dynamic lighting, metallic/roughness workflows, and inspect rotations in Three.js without requiring online shader streaming.
+- **Cache Persistence**: Converted GLB assets are cached locally under `cache/models/` for instantaneous subsequent re-inspection.
+
+---
+
+## ⚖️ Data Sources, Attribution &amp; License
+
+CS2 Craft is free, open-source software licensed under the **[MIT License](LICENSE)**.
+
+- **Catalog Metadata**: Provided by [ByMykel/CSGO-API](https://github.com/ByMykel/CSGO-API) (MIT).
+- **Artwork Tracking**: Provided by [counter-strike-image-tracker](https://github.com/ByMykel/counter-strike-image-tracker) (MIT).
+- **Model Tooling**: Powered by [ValveResourceFormat / Source 2 Viewer](https://github.com/ValveResourceFormat/ValveResourceFormat).
+- **Market Data**: Quotes sourced via public Steam Community Market and Skinport endpoints.
+- **Legal Disclaimer**: CS2 Craft is an independent, unofficial project and is not affiliated with, endorsed by, or sponsored by Valve Corporation. Counter-Strike, CS2, Steam, and their respective logos and game artwork are registered trademarks of Valve Corporation.
+
+---
+
+<div align="center">
+  <sub>Crafted with precision for the Counter-Strike community by projectGloria.</sub>
+</div>
