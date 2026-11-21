@@ -26,3 +26,10 @@ Pushing a tag like `v0.4.0` runs `.github/workflows/release.yml`, which builds t
 - The step now runs `gh release view $env:TAG -R $env:GITHUB_REPOSITORY --json tagName | Out-Null` (no stderr redirection), and `gh release create` also gets `-R`.
 - Versions were already 0.4.0 in `package.json`, `package-lock.json`, `tauri.conf.json`, `Cargo.toml`, `Cargo.lock` and `gloria.toml`, so nothing changed there.
 - Not run locally; the tag was not pushed or moved. The release needs a re-run after this commit is on the tag's ref.
+
+## Fix: v0.4.1 release run did not attach the setup
+
+- The failed log's last lines were not the `gh` error any more (that was fixed for v0.4.0); the v0.4.1 run actually died in "Build the frontend and viewer helper": `scripts/prepare-viewer.mjs` failed with `ENOENT ... tools\source2\Source2Viewer-CLI.exe` because the downloaded Source2Viewer-CLI zip did not put its files directly in `tools/source2`, so GloriaSetup never ran.
+- `scripts/prepare-viewer.mjs` now searches the extracted archive recursively and copies `Source2Viewer-CLI.exe`, `libSkiaSharp.dll` and `spirv-cross.dll` up to `tools/source2` when they are nested, and throws a clear error listing the files found if one is missing.
+- Versions were already 0.4.1 in `package.json`, `package-lock.json`, `tauri.conf.json`, `Cargo.toml`, `Cargo.lock` and `gloria.toml`; nothing changed there.
+- Not run locally; the tag was not pushed or moved. The release needs a re-run on a commit that includes this change.
