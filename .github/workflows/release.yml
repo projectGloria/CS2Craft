@@ -1,0 +1,85 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  setup:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Install npm packages
+        run: npm ci
+
+      # Runs scripts/prepare-viewer.mjs (bundles node.exe and Source2Viewer-CLI into src-tauri/resources/viewer),
+      # type-checks and builds the frontend.
+      - name: Build the frontend and viewer helper
+        run: npm run build
+
+      - name: Build the app (no installer)
+        run: npx tauri build --no-bundle
+
+      # Only what the app needs at run time: the exe plus the Tauri resources it reads from resource_dir()/resources.
+      - name: Collect runtime files
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $out = 'app-dist'
+          Remove-Item $out -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force "$out/resources/licenses", "$out/resources/viewer" | Out-Null
+          Copy-Item src-tauri/target/release/cs2-craft.exe $out
+          Copy-Item src-tauri/resources/catalog.json, src-tauri/resources/color-corrections.json "$out/resources"
+          Copy-Item src-tauri/resources/licenses/* "$out/resources/licenses"
+          Copy-Item src-tauri/resources/viewer/* "$out/resources/viewer"
+          foreach ($f in 'cs2-craft.exe', 'resources/viewer/node.exe', 'resources/viewer/Source2Viewer-CLI.exe', 'resources/catalog.json') {
+            if (-not (Test-Path "$out/$f")) { throw "missing $f in app-dist" }
+          }
+
+      - name: Download the WebView2 bootstrapper
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Invoke-WebRequest -Uri 'https://go.microsoft.com/fwlink/p/?LinkId=2124703' -OutFile "$env:RUNNER_TEMP\MicrosoftEdgeWebview2Setup.exe"
+
+      - name: Make sure the release exists
+        if: github.ref_type == 'tag'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          gh release view $env:TAG 2>$null | Out-Null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create $env:TAG --generate-notes --title $env:TAG
+            if ($LASTEXITCODE -ne 0) { throw 'could not create the release' }
+          }
+          $global:LASTEXITCODE = 0
+
+      - name: Pack and attach the setup
+        uses: projectGloria/GloriaSetup@v0.1.0
+        with:
+          app-dir: app-dist
+          manifest: gloria.toml
+          webview2-bootstrapper: ${{ runner.temp }}\MicrosoftEdgeWebview2Setup.exe
+          certificate: ${{ secrets.WINDOWS_PFX_BASE64 }}
+          certificate-password: ${{ secrets.WINDOWS_PFX_PASSWORD }}

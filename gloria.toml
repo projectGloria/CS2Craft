@@ -1,0 +1,10 @@
+id            = "CS2Craft"
+name          = "CS2Craft"
+version       = "0.4.0"
+main_exe      = "cs2-craft.exe"
+icon          = "src-tauri/icons/icon.ico"
+accent        = "#f97316"
+description   = "Counter-Strike 2 skin studio & 3D inspector"
+needs_webview2 = true
+data_folders  = ["%LOCALAPPDATA%\\com.cs2craft.catalog"]
+legacy_names  = ["CS2 Craft"]
