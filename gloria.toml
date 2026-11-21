@@ -1,6 +1,6 @@
 id            = "CS2Craft"
 name          = "CS2Craft"
-version       = "0.4.0"
+version       = "0.4.1"
 main_exe      = "cs2-craft.exe"
 icon          = "src-tauri/icons/icon.ico"
 accent        = "#f97316"

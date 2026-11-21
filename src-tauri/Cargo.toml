@@ -1,6 +1,6 @@
 [package]
 name = "cs2-craft"
-version = "0.4.0"
+version = "0.4.1"
 description = "A personal Counter-Strike 2 cosmetics catalog"
 edition = "2021"
 default-run = "cs2-craft"
