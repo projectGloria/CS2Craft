@@ -19,3 +19,10 @@ Pushing a tag like `v0.4.0` runs `.github/workflows/release.yml`, which builds t
 - `legacy_names = ["CS2 Craft"]` is the Tauri `productName`, which the old NSIS installer used as its DisplayName.
 - The icon is the existing `src-tauri/icons/icon.ico`; no icon files were created or changed.
 - The release is created by the workflow if it does not exist, with generated notes.
+
+## Fix: v0.4.0 release run did not attach the setup
+
+- The failure `accepts at most 1 arg(s), received 3` came from the "Make sure the release exists" step in `.github/workflows/release.yml`: `gh release view $env:TAG 2>$null` let `gh` see the redirection as extra positional arguments, so the step failed before GloriaSetup ran.
+- The step now runs `gh release view $env:TAG -R $env:GITHUB_REPOSITORY --json tagName | Out-Null` (no stderr redirection), and `gh release create` also gets `-R`.
+- Versions were already 0.4.0 in `package.json`, `package-lock.json`, `tauri.conf.json`, `Cargo.toml`, `Cargo.lock` and `gloria.toml`, so nothing changed there.
+- Not run locally; the tag was not pushed or moved. The release needs a re-run after this commit is on the tag's ref.
