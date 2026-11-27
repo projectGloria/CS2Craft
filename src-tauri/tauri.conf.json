@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "CS2 Craft",
+  "productName": "CS2Craft",
   "version": "0.4.1",
   "identifier": "com.cs2craft.catalog",
   "build": {
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "CS2 Craft",
+        "title": "CS2Craft",
         "width": 1440,
         "height": 940,
         "minWidth": 960,
@@ -32,7 +32,7 @@
     }
   },
   "bundle": {
-    "active": true,
+    "active": false,
     "targets": [
       "nsis"
     ],

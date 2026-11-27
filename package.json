@@ -9,7 +9,7 @@
     "test": "vitest run src && node --test scripts/offline-viewer.test.mjs",
     "viewer:prepare": "node scripts/prepare-viewer.mjs",
     "desktop": "tauri dev",
-    "package": "node scripts/verify-snapshot.mjs && tauri build --bundles nsis",
+    "package": "node scripts/verify-snapshot.mjs && tauri build --no-bundle",
     "catalog:prepare": "cargo run --manifest-path tools/catalog-builder/Cargo.toml --target-dir src-tauri/target --release",
     "test:native": "cargo test --manifest-path src-tauri/Cargo.toml --release --lib"
   },
